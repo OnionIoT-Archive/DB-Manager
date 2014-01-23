@@ -26,7 +26,8 @@ var devicesSchema = new Schema({
 
 var sessionsSchema = new Schema({
 	id : String,
-	date : Date
+	date : Date,
+	token:String
 });
 
 var test = new Schema({
