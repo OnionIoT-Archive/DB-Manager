@@ -176,6 +176,5 @@ rpc.register('DB_DELETE_SESSION', function(p, callback) {
 	});
 });
 
-
 log("started...");
 
