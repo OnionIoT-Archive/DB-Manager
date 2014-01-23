@@ -94,6 +94,24 @@ rpc.register('DB_GET_USER', function(p, callback) {
 	});
 });
 
+rpc.register('DB_UPDATE_USER', function(p, callback) {
+	if(p&&p.condition&&p.update){
+		Users.update(p.condition, p.update,function(err, numberAffected, raw){
+			callback(raw);
+		});	
+	}
+});
+
+rpc.register('DB_DELETE_USER', function(p, callback) {
+	Users.remove(p, function(err) {
+		if(err){
+			callback(err);
+		}else{
+			callback(true);
+		}
+	});
+});
+
 rpc.register('DB_ADD_DEVICE', function(p, callback) {
 	var Device = new Devices(p);
 	Device.save(function(err, result, numberAffect) {
@@ -127,34 +145,37 @@ rpc.register('DB_DELETE_DEVICE', function(p, callback) {
 });
 
 rpc.register('DB_ADD_SESSION', function(p, callback) {
-	var Session = new Sessions(p);
-	Session.save(function(err, result, numberAffect) {
-		if (err) {
-			log(err);
+	var Device = new Devices(p);
+	Sessions.save(function(err, result, numberAffect) {
+		//TODO add check err
+		callback(result);
+	});
+});
+
+rpc.register('DB_GET_SESSION', function(p, callback) {
+	Sessions.find(p, function(err, result) {
+		callback(result);
+	});
+});
+
+rpc.register('DB_UPDATE_SESSION', function(p, callback) {
+	if(p&&p.condition&&p.update){
+		Sessions.update(p.condition, p.update,function(err, numberAffected, raw){
+			callback(raw);
+		});	
+	}
+});
+
+rpc.register('DB_DELETE_SESSION', function(p, callback) {
+	Sessions.remove(p, function(err) {
+		if(err){
 			callback(err);
-		} else {
-			callback(result);
+		}else{
+			callback(true);
 		}
 	});
 });
 
-rpc.register('DB_CHECK_USER', function(p, callback) {
-	callback(false);
-});
-
-rpc.register('DB_CREATE_SESSION', function(p, callback) {
-	var user = p.user || 'guest';
-	var payload = {
-		token : 'this-is-a-dummy-session-token',
-		expDate : new Date(),
-		user : user
-	};
-	callback(payload);
-});
-
-rpc.register('DB_CHECK_SESSION', function(p, callback) {
-	callback(true);
-});
 
 log("started...");
 
