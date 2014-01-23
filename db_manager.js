@@ -89,7 +89,7 @@ rpc.register('DB_ADD_USER', function(p, callback) {
 });
 
 rpc.register('DB_GET_USER', function(p, callback) {
-	Users.findOne(p,function(err,result){
+	Users.findOne(p, function(err, result) {
 		callback(result);
 	});
 });
@@ -103,12 +103,28 @@ rpc.register('DB_ADD_DEVICE', function(p, callback) {
 });
 
 rpc.register('DB_GET_DEVICE', function(p, callback) {
-	Devices.findOne(p,function(err,result){
+	Devices.find(p, function(err, result) {
 		callback(result);
 	});
-	callback('DB_GET_DEVICE');
 });
 
+rpc.register('DB_UPDATE_DEVICE', function(p, callback) {
+	if(p&&p.condition&&p.update){
+		Devices.update(p.condition, p.update,function(err, numberAffected, raw){
+			callback(raw);
+		});	
+	}
+});
+
+rpc.register('DB_DELETE_DEVICE', function(p, callback) {
+	Devices.remove(p, function(err) {
+		if(err){
+			callback(err);
+		}else{
+			callback(true);
+		}
+	});
+});
 
 rpc.register('DB_ADD_SESSION', function(p, callback) {
 	var Session = new Sessions(p);
