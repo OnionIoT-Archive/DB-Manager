@@ -123,7 +123,6 @@ rpc.register('DB_ADD_DEVICE', function(p, callback) {
 		//TODO add check err
 		callback(result);
 	});
-	callback('result');
 });
 
 rpc.register('DB_GET_DEVICE', function(p, callback) {
@@ -133,7 +132,9 @@ rpc.register('DB_GET_DEVICE', function(p, callback) {
 });
 
 rpc.register('DB_UPDATE_DEVICE', function(p, callback) {
+	console.log(p.condition);
 	if(p&&p.condition&&p.update){
+		console.log('condition meet');
 		Devices.update(p.condition, p.update,function(err, numberAffected, raw){
 			callback(raw);
 		});	
