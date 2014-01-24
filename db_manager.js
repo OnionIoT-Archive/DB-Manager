@@ -20,14 +20,18 @@ var userSchema = new Schema({
 
 var devicesSchema = new Schema({
 	id : String,
+	key:String,
+	endpoint:Object,
 	name : String,
-	date : Date
+	date : Date,
+	userId:String
 });
 
 var sessionsSchema = new Schema({
 	id : String,
 	date : Date,
-	token:String
+	token:String,
+	userId:String
 });
 
 var test = new Schema({
@@ -119,6 +123,7 @@ rpc.register('DB_ADD_DEVICE', function(p, callback) {
 		//TODO add check err
 		callback(result);
 	});
+	callback('result');
 });
 
 rpc.register('DB_GET_DEVICE', function(p, callback) {
@@ -146,15 +151,15 @@ rpc.register('DB_DELETE_DEVICE', function(p, callback) {
 });
 
 rpc.register('DB_ADD_SESSION', function(p, callback) {
-	var Device = new Devices(p);
-	Sessions.save(function(err, result, numberAffect) {
-		//TODO add check err
+	var Session = new Sessions(p);
+	Session.save(function(err, result, numberAffect) {
 		callback(result);
 	});
 });
 
 rpc.register('DB_GET_SESSION', function(p, callback) {
-	Sessions.find(p, function(err, result) {
+	Sessions.findOne(p, function(err, result) {
+		console.log(result);
 		callback(result);
 	});
 });
