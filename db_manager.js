@@ -1,5 +1,6 @@
 var rpc = require('./lib/amqp-rpc/amqp_rpc');
 var mongoose = require('mongoose');
+var uniqueValidator = require('mongoose-unique-validator');
 
 var dbUrl = 'mongodb://onion:!<684ygrJ51Vx)3@db.onion.io:27017/onion';
 
@@ -10,29 +11,36 @@ var log = function(msg) {
 var Schema = mongoose.Schema;
 
 var userSchema = new Schema({
-	id : String,
-	email : String,
-	passHash : String,
-	status : String,
-	devices : Array,
-	date : Date
+	id : { type: String, required: false, unique: false },
+	email : { type: String, required: false, unique: false },
+	passHash : { type: String, required: false, unique: false },
+	status : { type: String, required: false, unique: false },
+	devices : { type: Array, required: false, unique: false },
+	date : { type: Date, required: false, unique: false }
 });
+userSchema.plugin(uniqueValidator);
 
 var devicesSchema = new Schema({
-	id : String,
-	key:String,
-	endpoint:Object,
-	name : String,
-	date : Date,
-	userId:String
+	id : { type: String, required: false, unique: false },
+	key:{ type: String, required: false, unique: false },
+	lastUpdate : { type: Date, required: false, unique: false },
+	userId:{ type: String, required: false, unique: false },
+	status:{ type: String, required: false, unique: false },
+	meta:{
+		name:{ type: String, required: false, unique: false },
+		description:{ type: String, required: false, unique: false },
+		location:{ type: String, required: false, unique: false },
+		deviceType:{ type: String, required: false, unique: false }
+	}
 });
-
+devicesSchema.plugin(uniqueValidator);
 var sessionsSchema = new Schema({
-	id : String,
-	date : Date,
-	token:String,
-	userId:String
+	id : { type: String, required: false, unique: false },
+	date : { type: Date, required: false, unique: false },
+	token:{ type: String, required: false, unique: false },
+	userId:{ type: String, required: false, unique: false }
 });
+sessionsSchema.plugin(uniqueValidator);
 
 var test = new Schema({
 	testName : String,
@@ -89,17 +97,20 @@ rpc.register('DB_ADD_USER', function(p, callback) {
 	var User = new Users(p);
 	User.save(function(err, result, numberAffect) {
 		//TODO add check err
+		console.log(result);
 		callback(result);
 	});
 });
 
 rpc.register('DB_GET_USER', function(p, callback) {
+	console.log(p);
 	Users.findOne(p, function(err, result) {
 		callback(result);
 	});
 });
 
 rpc.register('DB_UPDATE_USER', function(p, callback) {
+	console.log(p);
 	if(p&&p.condition&&p.update){
 		Users.update(p.condition, p.update,function(err, numberAffected, raw){
 			callback(raw);
@@ -108,6 +119,7 @@ rpc.register('DB_UPDATE_USER', function(p, callback) {
 });
 
 rpc.register('DB_DELETE_USER', function(p, callback) {
+	console.log(p);
 	Users.remove(p, function(err) {
 		if(err){
 			callback(err);
@@ -118,6 +130,7 @@ rpc.register('DB_DELETE_USER', function(p, callback) {
 });
 
 rpc.register('DB_ADD_DEVICE', function(p, callback) {
+	console.log(p);
 	var Device = new Devices(p);
 	Device.save(function(err, result, numberAffect) {
 		//TODO add check err
@@ -126,13 +139,14 @@ rpc.register('DB_ADD_DEVICE', function(p, callback) {
 });
 
 rpc.register('DB_GET_DEVICE', function(p, callback) {
+	console.log(p);
 	Devices.find(p, function(err, result) {
 		callback(result);
 	});
 });
 
 rpc.register('DB_UPDATE_DEVICE', function(p, callback) {
-	console.log(p.condition);
+	console.log(p);
 	if(p&&p.condition&&p.update){
 		console.log('condition meet');
 		Devices.update(p.condition, p.update,function(err, numberAffected, raw){
@@ -142,6 +156,7 @@ rpc.register('DB_UPDATE_DEVICE', function(p, callback) {
 });
 
 rpc.register('DB_DELETE_DEVICE', function(p, callback) {
+	console.log(p);
 	Devices.remove(p, function(err) {
 		if(err){
 			callback(err);
@@ -152,6 +167,7 @@ rpc.register('DB_DELETE_DEVICE', function(p, callback) {
 });
 
 rpc.register('DB_ADD_SESSION', function(p, callback) {
+	console.log(p);
 	var Session = new Sessions(p);
 	Session.save(function(err, result, numberAffect) {
 		callback(result);
@@ -159,6 +175,7 @@ rpc.register('DB_ADD_SESSION', function(p, callback) {
 });
 
 rpc.register('DB_GET_SESSION', function(p, callback) {
+	console.log(p);
 	Sessions.findOne(p, function(err, result) {
 		console.log(result);
 		callback(result);
@@ -166,6 +183,7 @@ rpc.register('DB_GET_SESSION', function(p, callback) {
 });
 
 rpc.register('DB_UPDATE_SESSION', function(p, callback) {
+	console.log(p);
 	if(p&&p.condition&&p.update){
 		Sessions.update(p.condition, p.update,function(err, numberAffected, raw){
 			callback(raw);
@@ -173,7 +191,8 @@ rpc.register('DB_UPDATE_SESSION', function(p, callback) {
 	}
 });
 
-rpc.register('DB_DELETE_SESSION', function(p, callback) {
+rpc.register('DB_REMOVE_SESSION', function(p, callback) {
+	console.log(p);
 	Sessions.remove(p, function(err) {
 		if(err){
 			callback(err);
