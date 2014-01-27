@@ -139,10 +139,16 @@ rpc.register('DB_ADD_DEVICE', function(p, callback) {
 });
 
 rpc.register('DB_GET_DEVICE', function(p, callback) {
-	console.log(p);
-	Devices.find(p, function(err, result) {
+	if(p&&p._id){
+		Devices.findOne(p, function(err, result) {
 		callback(result);
 	});
+	}else{
+		Devices.find(p, function(err, result) {
+		callback(result);
+	});
+	}
+	
 });
 
 rpc.register('DB_UPDATE_DEVICE', function(p, callback) {
