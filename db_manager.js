@@ -34,6 +34,25 @@ var devicesSchema = new Schema({
 	}
 });
 devicesSchema.plugin(uniqueValidator);
+
+var functionsSchema = new Schema({
+	path : { type: String, required: false, unique: false },
+	fuctionId : { type: Number, required: false, unique: false },
+	verb:{ type: String, required: false, unique: false },
+	deviceId:{ type: String, required: false, unique: false },
+	postParams:[{ type: String, required: false, unique: false }],
+	lastAccess:{ type: Date, required: false, unique: false }
+});
+functionsSchema.plugin(uniqueValidator);
+
+var valuesSchema = new Schema({
+	path : { type: String, required: false, unique: false },
+	value: { type: Object, required: false, unique: false },
+	timeStep:{ type: Date, required: false, unique: false },
+	deviceId:{ type: String, required: false, unique: false }
+});
+valuesSchema.plugin(uniqueValidator);
+
 var sessionsSchema = new Schema({
 	id : { type: String, required: false, unique: false },
 	date : { type: Date, required: false, unique: false },
