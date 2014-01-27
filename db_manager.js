@@ -11,53 +11,169 @@ var log = function(msg) {
 var Schema = mongoose.Schema;
 
 var userSchema = new Schema({
-	id : { type: String, required: false, unique: false },
-	email : { type: String, required: false, unique: false },
-	passHash : { type: String, required: false, unique: false },
-	status : { type: String, required: false, unique: false },
-	devices : { type: Array, required: false, unique: false },
-	date : { type: Date, required: false, unique: false }
+	id : {
+		type : String,
+		required : false,
+		unique : false
+	},
+	email : {
+		type : String,
+		required : false,
+		unique : false
+	},
+	passHash : {
+		type : String,
+		required : false,
+		unique : false
+	},
+	status : {
+		type : String,
+		required : false,
+		unique : false
+	},
+	devices : {
+		type : Array,
+		required : false,
+		unique : false
+	},
+	date : {
+		type : Date,
+		required : false,
+		unique : false
+	}
 });
 userSchema.plugin(uniqueValidator);
 
 var devicesSchema = new Schema({
-	id : { type: String, required: false, unique: false },
-	key:{ type: String, required: false, unique: false },
-	lastUpdate : { type: Date, required: false, unique: false },
-	userId:{ type: String, required: false, unique: false },
-	status:{ type: String, required: false, unique: false },
-	meta:{
-		name:{ type: String, required: false, unique: false },
-		description:{ type: String, required: false, unique: false },
-		location:{ type: String, required: false, unique: false },
-		deviceType:{ type: String, required: false, unique: false }
+	id : {
+		type : String,
+		required : false,
+		unique : false
+	},
+	key : {
+		type : String,
+		required : false,
+		unique : false
+	},
+	lastUpdate : {
+		type : Date,
+		required : false,
+		unique : false
+	},
+	userId : {
+		type : String,
+		required : false,
+		unique : false
+	},
+	status : {
+		type : String,
+		required : false,
+		unique : false
+	},
+	meta : {
+		name : {
+			type : String,
+			required : false,
+			unique : false
+		},
+		description : {
+			type : String,
+			required : false,
+			unique : false
+		},
+		location : {
+			type : String,
+			required : false,
+			unique : false
+		},
+		deviceType : {
+			type : String,
+			required : false,
+			unique : false
+		}
 	}
 });
 devicesSchema.plugin(uniqueValidator);
 
-var functionsSchema = new Schema({
-	path : { type: String, required: false, unique: false },
-	fuctionId : { type: Number, required: false, unique: false },
-	verb:{ type: String, required: false, unique: false },
-	deviceId:{ type: String, required: false, unique: false },
-	postParams:[{ type: String, required: false, unique: false }],
-	lastAccess:{ type: Date, required: false, unique: false }
+var procedureSchema = new Schema({
+	path : {
+		type : String,
+		required : false,
+		unique : false
+	},
+	fuctionId : {
+		type : Number,
+		required : false,
+		unique : false
+	},
+	verb : {
+		type : String,
+		required : false,
+		unique : false
+	},
+	deviceId : {
+		type : String,
+		required : false,
+		unique : false
+	},
+	postParams : [{
+		type : String,
+		required : false,
+		unique : false
+	}],
+	lastAccess : {
+		type : Date,
+		required : false,
+		unique : false
+	}
 });
-functionsSchema.plugin(uniqueValidator);
+procedureSchema.plugin(uniqueValidator);
 
-var valuesSchema = new Schema({
-	path : { type: String, required: false, unique: false },
-	value: { type: Object, required: false, unique: false },
-	timeStep:{ type: Date, required: false, unique: false },
-	deviceId:{ type: String, required: false, unique: false }
+var statesSchema = new Schema({
+	path : {
+		type : String,
+		required : false,
+		unique : false
+	},
+	value : {
+		type : Object,
+		required : false,
+		unique : false
+	},
+	timeStep : {
+		type : Date,
+		required : false,
+		unique : false
+	},
+	deviceId : {
+		type : String,
+		required : false,
+		unique : false
+	}
 });
-valuesSchema.plugin(uniqueValidator);
+statesSchema.plugin(uniqueValidator);
 
 var sessionsSchema = new Schema({
-	id : { type: String, required: false, unique: false },
-	date : { type: Date, required: false, unique: false },
-	token:{ type: String, required: false, unique: false },
-	userId:{ type: String, required: false, unique: false }
+	id : {
+		type : String,
+		required : false,
+		unique : false
+	},
+	date : {
+		type : Date,
+		required : false,
+		unique : false
+	},
+	token : {
+		type : String,
+		required : false,
+		unique : false
+	},
+	userId : {
+		type : String,
+		required : false,
+		unique : false
+	}
 });
 sessionsSchema.plugin(uniqueValidator);
 
@@ -70,6 +186,8 @@ var test = new Schema({
 var Test = mongoose.model('Test', test);
 var Users = mongoose.model('Users', userSchema);
 var Devices = mongoose.model('Devices', devicesSchema);
+var Procedures = mongoose.model('Procedures', procedureSchema);
+var States = mongoose.model('States', statesSchema);
 var Sessions = mongoose.model('Sessions', sessionsSchema);
 
 mongoose.connect(dbUrl);
@@ -130,19 +248,19 @@ rpc.register('DB_GET_USER', function(p, callback) {
 
 rpc.register('DB_UPDATE_USER', function(p, callback) {
 	console.log(p);
-	if(p&&p.condition&&p.update){
-		Users.update(p.condition, p.update,function(err, numberAffected, raw){
+	if (p && p.condition && p.update) {
+		Users.update(p.condition, p.update, function(err, numberAffected, raw) {
 			callback(raw);
-		});	
+		});
 	}
 });
 
 rpc.register('DB_DELETE_USER', function(p, callback) {
 	console.log(p);
 	Users.remove(p, function(err) {
-		if(err){
+		if (err) {
 			callback(err);
-		}else{
+		} else {
 			callback(true);
 		}
 	});
@@ -158,34 +276,44 @@ rpc.register('DB_ADD_DEVICE', function(p, callback) {
 });
 
 rpc.register('DB_GET_DEVICE', function(p, callback) {
-	if(p&&p._id){
-		Devices.findOne(p, function(err, result) {
-		callback(result);
-	});
-	}else{
-		Devices.find(p, function(err, result) {
-		callback(result);
-	});
+	if (p && p._id) {
+		Devices.findOne(p, function(err, device) {
+			Procedures.find({
+				deviceId : result._id
+			}, function(err, funcs) {
+				device.meta.procedures = funcs;
+				States.find({
+					deviceId : result._id
+				}, function(err, states) {
+					device.meta.states = states;
+				});
+				callback(device);
+			});
+		});
+	} else {
+		Devices.find(p, function(err, devices) {
+			callback(devices);
+		});
 	}
-	
+
 });
 
 rpc.register('DB_UPDATE_DEVICE', function(p, callback) {
 	console.log(p);
-	if(p&&p.condition&&p.update){
+	if (p && p.condition && p.update) {
 		console.log('condition meet');
-		Devices.update(p.condition, p.update,function(err, numberAffected, raw){
+		Devices.update(p.condition, p.update, function(err, numberAffected, raw) {
 			callback(raw);
-		});	
+		});
 	}
 });
 
 rpc.register('DB_DELETE_DEVICE', function(p, callback) {
 	console.log(p);
 	Devices.remove(p, function(err) {
-		if(err){
+		if (err) {
 			callback(err);
-		}else{
+		} else {
 			callback(true);
 		}
 	});
@@ -209,19 +337,19 @@ rpc.register('DB_GET_SESSION', function(p, callback) {
 
 rpc.register('DB_UPDATE_SESSION', function(p, callback) {
 	console.log(p);
-	if(p&&p.condition&&p.update){
-		Sessions.update(p.condition, p.update,function(err, numberAffected, raw){
+	if (p && p.condition && p.update) {
+		Sessions.update(p.condition, p.update, function(err, numberAffected, raw) {
 			callback(raw);
-		});	
+		});
 	}
 });
 
 rpc.register('DB_REMOVE_SESSION', function(p, callback) {
 	console.log(p);
 	Sessions.remove(p, function(err) {
-		if(err){
+		if (err) {
 			callback(err);
-		}else{
+		} else {
 			callback(true);
 		}
 	});
