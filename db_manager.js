@@ -319,6 +319,75 @@ rpc.register('DB_DELETE_DEVICE', function(p, callback) {
 	});
 });
 
+rpc.register('DB_ADD_PROCEDURE', function(p, callback) {
+	console.log(p);
+	var Procedure = new Procedures(p);
+	Procedure.save(function(err, result, numberAffect) {
+		callback(result);
+	});
+});
+
+rpc.register('DB_REMOVE_PROCEDURE', function(p, callback) {
+	console.log(p);
+	Procedure.remove(p, function(err) {
+		if (err) {
+			callback(err);
+		} else {
+			callback(true);
+		}
+	});
+});
+
+rpc.register('DB_GET_PROCEDURE', function(p, callback) {
+	
+});
+
+rpc.register('DB_UPDATE_PROCEDURE', function(p, callback) {
+	console.log(p);
+	if (p && p.condition && p.update) {
+		console.log('condition meet');
+		Procedures.update(p.condition, p.update, function(err, numberAffected, raw) {
+			callback(raw);
+		});
+	}
+});
+
+
+rpc.register('DB_ADD_STATE', function(p, callback) {
+	console.log(p);
+	var State = new States(p);
+	State.save(function(err, result, numberAffect) {
+		callback(result);
+	});
+});
+
+rpc.register('DB_REMOVE_STATE', function(p, callback) {
+	console.log(p);
+	States.remove(p, function(err) {
+		if (err) {
+			callback(err);
+		} else {
+			callback(true);
+		}
+	});
+});
+
+rpc.register('DB_GET_STATE', function(p, callback) {
+	
+});
+
+rpc.register('DB_UPDATE_STATE', function(p, callback) {
+	console.log(p);
+	if (p && p.condition && p.update) {
+		console.log('condition meet');
+		States.update(p.condition, p.update, function(err, numberAffected, raw) {
+			callback(raw);
+		});
+	}
+});
+
+
+
 rpc.register('DB_ADD_SESSION', function(p, callback) {
 	console.log(p);
 	var Session = new Sessions(p);
