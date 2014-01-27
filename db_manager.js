@@ -90,6 +90,16 @@ var devicesSchema = new Schema({
 			type : String,
 			required : false,
 			unique : false
+		},
+		states : {
+			type : Array,
+			required : false,
+			unique : false
+		},
+		procedures : {
+			type : Array,
+			required : false,
+			unique : false
 		}
 	}
 });
@@ -276,19 +286,27 @@ rpc.register('DB_ADD_DEVICE', function(p, callback) {
 });
 
 rpc.register('DB_GET_DEVICE', function(p, callback) {
+	console.log(p);
 	if (p && p._id) {
 		Devices.findOne(p, function(err, device) {
-			Procedures.find({
-				deviceId : result._id
-			}, function(err, funcs) {
-				device.meta.procedures = funcs;
-				States.find({
-					deviceId : result._id
-				}, function(err, states) {
-					device.meta.states = states;
+			if (device && device._id) {
+				Procedures.find({
+					deviceId : device._id
+				}, function(err, funcs) {
+					device.meta.procedures = funcs;
+					States.find({
+						deviceId : device._id
+					}, function(err, states) {
+						device.meta.states = states;
+						console.log('states');
+						console.log(device);
+						callback(device);
+					});
 				});
+			} else {
 				callback(device);
-			});
+			}
+
 		});
 	} else {
 		Devices.find(p, function(err, devices) {
@@ -339,7 +357,7 @@ rpc.register('DB_REMOVE_PROCEDURE', function(p, callback) {
 });
 
 rpc.register('DB_GET_PROCEDURE', function(p, callback) {
-	
+
 });
 
 rpc.register('DB_UPDATE_PROCEDURE', function(p, callback) {
@@ -351,7 +369,6 @@ rpc.register('DB_UPDATE_PROCEDURE', function(p, callback) {
 		});
 	}
 });
-
 
 rpc.register('DB_ADD_STATE', function(p, callback) {
 	console.log(p);
@@ -373,7 +390,7 @@ rpc.register('DB_REMOVE_STATE', function(p, callback) {
 });
 
 rpc.register('DB_GET_STATE', function(p, callback) {
-	
+
 });
 
 rpc.register('DB_UPDATE_STATE', function(p, callback) {
@@ -385,8 +402,6 @@ rpc.register('DB_UPDATE_STATE', function(p, callback) {
 		});
 	}
 });
-
-
 
 rpc.register('DB_ADD_SESSION', function(p, callback) {
 	console.log(p);
