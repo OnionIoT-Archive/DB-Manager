@@ -146,11 +146,11 @@ var statesSchema = new Schema({
 		unique : false
 	},
 	value : {
-		type : Object,
+		type : mongoose.Schema.Types.Mixed,
 		required : false,
 		unique : false
 	},
-	timeStep : {
+	timeStamp : {
 		type : Date,
 		required : false,
 		unique : false
