@@ -70,6 +70,16 @@ var devicesSchema = new Schema({
 		required : false,
 		unique : false
 	},
+	states : {
+		type : Array,
+		required : false,
+		unique : false
+	},
+	procedures : {
+		type : Array,
+		required : false,
+		unique : false
+	},
 	meta : {
 		name : {
 			type : String,
@@ -88,16 +98,6 @@ var devicesSchema = new Schema({
 		},
 		deviceType : {
 			type : String,
-			required : false,
-			unique : false
-		},
-		states : {
-			type : Array,
-			required : false,
-			unique : false
-		},
-		procedures : {
-			type : Array,
 			required : false,
 			unique : false
 		}
@@ -293,11 +293,11 @@ rpc.register('DB_GET_DEVICE', function(p, callback) {
 				Procedures.find({
 					deviceId : device._id
 				}, function(err, funcs) {
-					device.meta.procedures = funcs;
+					device.procedures = funcs;
 					States.find({
 						deviceId : device._id
 					}, function(err, states) {
-						device.meta.states = states;
+						device.states = states;
 						console.log('states');
 						console.log(device);
 						callback(device);
