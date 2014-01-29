@@ -146,7 +146,7 @@ var statesSchema = new Schema({
 		unique : false
 	},
 	value : {
-		type : mongoose.Schema.Types.Mixed,
+		type : Schema.Types.Mixed,
 		required : false,
 		unique : false
 	},
@@ -259,6 +259,7 @@ rpc.register('DB_GET_USER', function(p, callback) {
 rpc.register('DB_UPDATE_USER', function(p, callback) {
 	console.log(p);
 	if (p && p.condition && p.update) {
+		console.log('update');
 		Users.update(p.condition, p.update, function(err, numberAffected, raw) {
 			callback(raw);
 		});
@@ -319,8 +320,8 @@ rpc.register('DB_GET_DEVICE', function(p, callback) {
 rpc.register('DB_UPDATE_DEVICE', function(p, callback) {
 	console.log(p);
 	if (p && p.condition && p.update) {
-		console.log('condition meet');
 		Devices.update(p.condition, p.update, function(err, numberAffected, raw) {
+			console.log(raw);
 			callback(raw);
 		});
 	}
