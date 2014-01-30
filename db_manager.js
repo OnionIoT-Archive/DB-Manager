@@ -31,11 +31,6 @@ var userSchema = new Schema({
 		required : false,
 		unique : false
 	},
-	devices : {
-		type : Array,
-		required : false,
-		unique : false
-	},
 	date : {
 		type : Date,
 		required : false,
