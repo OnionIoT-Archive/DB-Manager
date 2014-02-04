@@ -21,6 +21,46 @@ var userSchema = new Schema({
 		required : false,
 		unique : false
 	},
+	fullname : {
+		type : String,
+		required : false,
+		unique : false
+	},
+	website : {
+		type : String,
+		required : false,
+		unique : false
+	},
+	company : {
+		type : String,
+		required : false,
+		unique : false
+	},
+	address : {
+		type : String,
+		required : false,
+		unique : false
+	},
+	title : {
+		type : String,
+		required : false,
+		unique : false
+	},
+	industry : {
+		type : String,
+		required : false,
+		unique : false
+	},
+	phone : {
+		type : String,
+		required : false,
+		unique : false
+	},
+	subscription : {
+		type : Boolean,
+		required : false,
+		unique : false
+	},
 	passHash : {
 		type : String,
 		required : false,
