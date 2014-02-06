@@ -83,12 +83,12 @@ var devicesSchema = new Schema({
 	id : {
 		type : String,
 		required : false,
-		unique : false
+		unique : true
 	},
 	key : {
 		type : String,
 		required : false,
-		unique : false
+		unique : true
 	},
 	lastUpdate : {
 		type : Date,
@@ -222,6 +222,35 @@ var sessionsSchema = new Schema({
 });
 sessionsSchema.plugin(uniqueValidator);
 
+var accessHistorySchema = new Schema({
+	action : {
+		type : String,
+		required : false,
+		unique : false
+	},
+	endpoint : {
+		type : String,
+		required : false,
+		unique : false
+	},
+	timestamp : {
+		type : Date,
+		required : false,
+		unique : false
+	},
+	deviceId : {
+		type : String,
+		required : false,
+		unique : false
+	},
+	payload : {
+		type : String,
+		required : false,
+		unique : false
+	}
+});
+accessHistorySchema.plugin(uniqueValidator);
+
 var test = new Schema({
 	testName : String,
 	testId : String,
@@ -234,6 +263,7 @@ var Devices = mongoose.model('Devices', devicesSchema);
 var Procedures = mongoose.model('Procedures', procedureSchema);
 var States = mongoose.model('States', statesSchema);
 var Sessions = mongoose.model('Sessions', sessionsSchema);
+var AccessHistory = mongoose.model('AccessHistory', accessHistorySchema);
 
 mongoose.connect(dbUrl);
 
@@ -474,6 +504,23 @@ rpc.register('DB_REMOVE_SESSION', function(p, callback) {
 		}
 	});
 });
+
+rpc.register('DB_ADD_HISTORY', function(p, callback) {
+	console.log(p);
+	p.timestamp = new Date();
+	var acHistory = new AccessHistory(p);
+	acHistory.save(function(err, result, numberAffect) {
+		callback(result);
+	});
+});
+
+rpc.register('DB_GET_HISTORY', function(p, callback) {
+	console.log(p);
+	AccessHistory.findOne(p, function(err, result) {
+		callback(result);
+	});
+});
+
 
 log("started...");
 
