@@ -510,13 +510,15 @@ rpc.register('DB_ADD_HISTORY', function(p, callback) {
 	p.timestamp = new Date();
 	var acHistory = new AccessHistory(p);
 	acHistory.save(function(err, result, numberAffect) {
+		console.log(err);
+		console.log('save history');
 		callback(result);
 	});
 });
 
 rpc.register('DB_GET_HISTORY', function(p, callback) {
 	console.log(p);
-	AccessHistory.findOne(p, function(err, result) {
+	AccessHistory.find(p, function(err, result) {
 		callback(result);
 	});
 });
