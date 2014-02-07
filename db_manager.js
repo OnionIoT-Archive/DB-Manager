@@ -423,7 +423,10 @@ rpc.register('DB_REMOVE_PROCEDURE', function(p, callback) {
 });
 
 rpc.register('DB_GET_PROCEDURE', function(p, callback) {
-
+	console.log(p);
+	Procedures.find(p, function(err, result) {
+		callback(result);
+	});
 });
 
 rpc.register('DB_UPDATE_PROCEDURE', function(p, callback) {
@@ -456,7 +459,10 @@ rpc.register('DB_REMOVE_STATE', function(p, callback) {
 });
 
 rpc.register('DB_GET_STATE', function(p, callback) {
-
+	console.log(p);
+	States.find(p, function(err, result) {
+		callback(result);
+	});
 });
 
 rpc.register('DB_UPDATE_STATE', function(p, callback) {
@@ -522,7 +528,6 @@ rpc.register('DB_GET_HISTORY', function(p, callback) {
 		callback(result);
 	});
 });
-
 
 log("started...");
 
