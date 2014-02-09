@@ -353,15 +353,15 @@ rpc.register('DB_ADD_DEVICE', function(p, callback) {
 
 rpc.register('DB_GET_DEVICE', function(p, callback) {
 	console.log(p);
-	if (p && p._id) {
+	if (p && p._id||p.id) {
 		Devices.findOne(p, function(err, device) {
-			if (device && device._id) {
+			if (device && device.id) {
 				Procedures.find({
-					deviceId : device._id
+					deviceId : device.id
 				}, function(err, funcs) {
 					device.procedures = funcs;
 					States.find({
-						deviceId : device._id
+						deviceId : device.id
 					}, function(err, states) {
 						device.states = states;
 						console.log('states');
