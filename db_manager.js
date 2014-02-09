@@ -146,7 +146,7 @@ var procedureSchema = new Schema({
 		required : false,
 		unique : false
 	},
-	fuctionId : {
+	functionId : {
 		type : Number,
 		required : false,
 		unique : false
@@ -424,7 +424,7 @@ rpc.register('DB_REMOVE_PROCEDURE', function(p, callback) {
 
 rpc.register('DB_GET_PROCEDURE', function(p, callback) {
 	console.log(p);
-	Procedures.find(p, function(err, result) {
+	Procedures.findOne(p, function(err, result) {
 		callback(result);
 	});
 });
