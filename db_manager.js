@@ -524,7 +524,7 @@ rpc.register('DB_ADD_HISTORY', function(p, callback) {
 
 rpc.register('DB_GET_HISTORY', function(p, callback) {
 	console.log(p);
-	AccessHistory.find(p, function(err, result) {
+	AccessHistory.find(p).limit(10).sort('-_id').exec( function(err, result) {
 		callback(result);
 	});
 });
