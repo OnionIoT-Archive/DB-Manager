@@ -1,7 +1,6 @@
 var rpc = require('./lib/amqp-rpc/amqp_rpc');
 var mongoose = require('mongoose');
 var uniqueValidator = require('mongoose-unique-validator');
-
 var dbUrl = 'mongodb://onion:!<684ygrJ51Vx)3@db.onion.io:27017/onion';
 
 var log = function(msg) {
@@ -408,6 +407,8 @@ rpc.register('DB_ADD_PROCEDURE', function(p, callback) {
 	var Procedure = new Procedures(p);
 	Procedure.save(function(err, result, numberAffect) {
 		callback(result);
+		//when update, call the socket server to updte the client
+		//rpc.call('REALTIME_UPDATE_PROCEDURE',p);
 	});
 });
 
@@ -519,6 +520,7 @@ rpc.register('DB_ADD_HISTORY', function(p, callback) {
 		console.log(err);
 		console.log('save history');
 		callback(result);
+		rpc.call('REALTIME_UPDATE_HISTORY',p);
 	});
 });
 
