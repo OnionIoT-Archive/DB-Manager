@@ -408,7 +408,7 @@ rpc.register('DB_ADD_PROCEDURE', function(p, callback) {
 	Procedure.save(function(err, result, numberAffect) {
 		callback(result);
 		//when update, call the socket server to updte the client
-		//rpc.call('REALTIME_UPDATE_PROCEDURE',p);
+		rpc.call('REALTIME_UPDATE_PROCEDURE',p,function(e){});
 	});
 });
 
@@ -445,6 +445,7 @@ rpc.register('DB_ADD_STATE', function(p, callback) {
 	var State = new States(p);
 	State.save(function(err, result, numberAffect) {
 		callback(result);
+		rpc.call('REALTIME_UPDATE_STATE',p,function(e){});
 	});
 });
 
@@ -520,7 +521,8 @@ rpc.register('DB_ADD_HISTORY', function(p, callback) {
 		console.log(err);
 		console.log('save history');
 		callback(result);
-		rpc.call('REALTIME_UPDATE_HISTORY',p);
+		console.log(rpc);
+		rpc.call('REALTIME_UPDATE_HISTORY',p,function(e){});
 	});
 });
 
