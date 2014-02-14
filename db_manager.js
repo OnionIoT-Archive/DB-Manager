@@ -414,7 +414,7 @@ rpc.register('DB_ADD_PROCEDURE', function(p, callback) {
 
 rpc.register('DB_REMOVE_PROCEDURE', function(p, callback) {
 	console.log(p);
-	Procedure.remove(p, function(err) {
+	Procedures.remove(p, function(err) {
 		if (err) {
 			callback(err);
 		} else {
