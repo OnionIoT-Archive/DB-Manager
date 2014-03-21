@@ -160,6 +160,12 @@ var procedureSchema = new Schema({
 		required : false,
 		unique : false
 	},
+	apiVersion : {
+		type : String,
+                default: 'v1',
+		required : false,
+		unique : false
+	},
 	postParams : [{
 		type : String,
 		required : false,
@@ -520,10 +526,8 @@ rpc.register('DB_ADD_HISTORY', function(p, callback) {
 	p.timestamp = new Date();
 	var acHistory = new AccessHistory(p);
 	acHistory.save(function(err, result, numberAffect) {
-		console.log(err);
 		console.log('save history');
 		callback(result);
-		console.log(rpc);
 		rpc.call('REALTIME_UPDATE_HISTORY',p,function(e){});
 	});
 });
