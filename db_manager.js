@@ -160,6 +160,12 @@ var procedureSchema = new Schema({
 		required : false,
 		unique : false
 	},
+	apiVersion : {
+		type : String,
+                default: 'v1',
+		required : false,
+		unique : false
+	},
 	postParams : [{
 		type : String,
 		required : false,
