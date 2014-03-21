@@ -442,6 +442,8 @@ rpc.register('DB_UPDATE_PROCEDURE', function(p, callback) {
 
 rpc.register('DB_ADD_STATE', function(p, callback) {
 	console.log(p);
+	States.remove({deviceId:p.deviceId, path:p.path}, function(err) {});
+        p['timeStamp'] = new Date()
 	var State = new States(p);
 	State.save(function(err, result, numberAffect) {
 		callback(result);
