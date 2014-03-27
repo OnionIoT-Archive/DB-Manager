@@ -163,6 +163,12 @@ var procedureSchema = new Schema({
 		required : false,
 		unique : false
 	},
+	apiVersion : {
+		type : String,
+                default: 'v1',
+		required : false,
+		unique : false
+	},
 	postParams : [{
 		type : String,
 		required : false,
@@ -417,7 +423,7 @@ rpc.register('DB_ADD_PROCEDURE', function(p, callback) {
  
 rpc.register('DB_REMOVE_PROCEDURE', function(p, callback) {
 	console.log(p);
-	Procedure.remove(p, function(err) {
+	Procedures.remove(p, function(err) {
 		if (err) {
 			callback(err);
 		} else {
@@ -445,6 +451,8 @@ rpc.register('DB_UPDATE_PROCEDURE', function(p, callback) {
 
 rpc.register('DB_ADD_STATE', function(p, callback) {
 	console.log(p);
+	States.remove({deviceId:p.deviceId, path:p.path}, function(err) {});
+        p['timeStamp'] = new Date()
 	var State = new States(p);
 	State.save(function(err, result, numberAffect) {
 		callback(result);
