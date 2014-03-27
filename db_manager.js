@@ -1,7 +1,10 @@
 var rpc = require('./lib/amqp-rpc/amqp_rpc');
 var mongoose = require('mongoose');
 var uniqueValidator = require('mongoose-unique-validator');
-var dbUrl = 'mongodb://onion:!<684ygrJ51Vx)3@db.onion.io:27017/onion';
+var config = require('./config');
+var config = config.init();
+
+var dbUrl = config.dbUrl;
 
 var log = function(msg) {
 	process.stdout.write("module::db_manager.js: ");
@@ -411,7 +414,7 @@ rpc.register('DB_ADD_PROCEDURE', function(p, callback) {
 		rpc.call('REALTIME_UPDATE_PROCEDURE',p,function(e){});
 	});
 });
-
+ 
 rpc.register('DB_REMOVE_PROCEDURE', function(p, callback) {
 	console.log(p);
 	Procedure.remove(p, function(err) {
