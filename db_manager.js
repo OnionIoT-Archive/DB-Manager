@@ -279,6 +279,11 @@ var triggerSchema = new Schema({
 		type : String,
 		required : false,
 		unique : false
+	},
+	deviceId : {
+		type : String,
+		required : false,
+		unique : false
 	}
 });
 triggerSchema.plugin(uniqueValidator);
@@ -296,7 +301,7 @@ var Procedures = mongoose.model('Procedures', procedureSchema);
 var States = mongoose.model('States', statesSchema);
 var Sessions = mongoose.model('Sessions', sessionsSchema);
 var AccessHistory = mongoose.model('AccessHistory', accessHistorySchema);
-var TriggerHistory = mongoose.model('TriggerHistory', triggerSchema);
+var Trigger = mongoose.model('Trigger', triggerSchema);
 
 mongoose.connect(dbUrl);
 
@@ -476,8 +481,9 @@ rpc.register('DB_UPDATE_PROCEDURE', function(p, callback) {
 
 rpc.register('DB_ADD_STATE', function(p, callback) {
 	console.log(p);
-	States.remove({deviceId:p.deviceId, path:p.path}, function(err) {});
-        p['timeStamp'] = new Date()
+	//why add this two line here?
+	// States.remove({deviceId:p.deviceId, path:p.path}, function(err) {});
+        // p['timeStamp'] = new Date()
 	var State = new States(p);
 	State.save(function(err, result, numberAffect) {
 		callback(result);
@@ -485,6 +491,7 @@ rpc.register('DB_ADD_STATE', function(p, callback) {
 	});
 });
 
+//TODO:when you remove a state, you also need to remove the related triggers
 rpc.register('DB_REMOVE_STATE', function(p, callback) {
 	console.log(p);
 	States.remove(p, function(err) {
@@ -568,7 +575,7 @@ rpc.register('DB_GET_HISTORY', function(p, callback) {
 });
 
 rpc.register('DB_ADD_TRIGGER', function(p, callback) {
-	var trigger = new TriggerHistory(p);
+	var trigger = new Trigger(p);
 	trigger.save(function(err, result, numberAffect) {
 		console.log('save trigger');
 		callback(result);
@@ -577,18 +584,23 @@ rpc.register('DB_ADD_TRIGGER', function(p, callback) {
 
 rpc.register('DB_GET_TRIGGER', function(p, callback) {
 	console.log(p);
-	TriggerHistory.find(p).limit(10).sort('-_id').exec( function(err, result) {
+	Trigger.find(p).limit(10).sort('-_id').exec( function(err, result) {
 		callback(result);
 	});
 });
 
 rpc.register('DB_UPDATE_TRIGGER', function(p, callback) {
-	callback(true);
+	console.log(p);
+	if (p && p.condition && p.update) {
+		Trigger.update(p.condition, p.update, function(err, numberAffected, raw) {
+			callback(raw);
+		});
+	}
 });
 
 rpc.register('DB_REMOVE_TRIGGER', function(p, callback) {
 	console.log(p);
-	TriggerHistory.remove(p, function(err) {
+	Trigger.remove(p, function(err) {
 		if (err) {
 			callback(err);
 		} else {
