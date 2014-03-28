@@ -7,14 +7,14 @@ var pro_config = {
 	mqServerUrl:"amqp://onionCore:p@mq.onion.io"
 };
 var init = function(){
-	if(process.env.NODE_ENV == 'development'){
+	if(process.env.DB_ENV == 'development'){
 		return dev_config;
-	}else if(process.env.NODE_ENV == 'production'){
+	}else if(process.env.DB_ENV == 'production'){
 		return pro_config
 	}else{
 		console.log('please specify the mode using:');
-		console.log('NODE_EVN="development" node db_manager.js');
-		console.log('NODE_EVN="production" node db_manager.js');
+		console.log('DB_ENV="development" node db_manager.js');
+		console.log('DB_ENV="production" node db_manager.js');
 		process.exit();
 	}
 }

@@ -259,6 +259,30 @@ var accessHistorySchema = new Schema({
 });
 accessHistorySchema.plugin(uniqueValidator);
 
+var triggerSchema = new Schema({
+	condition : {
+		type : String,
+		required : false,
+		unique : false
+	},
+	value : {
+		type : String,
+		required : false,
+		unique : false
+	},
+	postUrl : {
+		type : String,
+		required : false,
+		unique : false
+	},
+	stateID : {
+		type : String,
+		required : false,
+		unique : false
+	}
+});
+triggerSchema.plugin(uniqueValidator);
+
 var test = new Schema({
 	testName : String,
 	testId : String,
@@ -272,6 +296,7 @@ var Procedures = mongoose.model('Procedures', procedureSchema);
 var States = mongoose.model('States', statesSchema);
 var Sessions = mongoose.model('Sessions', sessionsSchema);
 var AccessHistory = mongoose.model('AccessHistory', accessHistorySchema);
+var TriggerHistory = mongoose.model('TriggerHistory', triggerSchema);
 
 mongoose.connect(dbUrl);
 
@@ -541,6 +566,38 @@ rpc.register('DB_GET_HISTORY', function(p, callback) {
 		callback(result);
 	});
 });
+
+rpc.register('DB_ADD_TRIGGER', function(p, callback) {
+	var trigger = new TriggerHistory(p);
+	trigger.save(function(err, result, numberAffect) {
+		console.log('save trigger');
+		callback(result);
+	});
+});
+
+rpc.register('DB_GET_TRIGGER', function(p, callback) {
+	console.log(p);
+	TriggerHistory.find(p).limit(10).sort('-_id').exec( function(err, result) {
+		callback(result);
+	});
+});
+
+rpc.register('DB_UPDATE_TRIGGER', function(p, callback) {
+	callback(true);
+});
+
+rpc.register('DB_REMOVE_TRIGGER', function(p, callback) {
+	console.log(p);
+	TriggerHistory.remove(p, function(err) {
+		if (err) {
+			callback(err);
+		} else {
+			callback(true);
+		}
+	});
+});
+
+
 
 log("started...");
 
