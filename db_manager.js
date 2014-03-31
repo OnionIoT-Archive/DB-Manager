@@ -20,7 +20,7 @@ var userSchema = new Schema({
 	},
 	email : {
 		type : String,
-		required : false,
+		required : true,
 		unique : false
 	},
 	fullname : {
@@ -65,7 +65,7 @@ var userSchema = new Schema({
 	},
 	passHash : {
 		type : String,
-		required : false,
+		required : true,
 		unique : false
 	},
 	status : {
@@ -165,7 +165,7 @@ var procedureSchema = new Schema({
 	},
 	apiVersion : {
 		type : String,
-                default: 'v1',
+		default : 'v1',
 		required : false,
 		unique : false
 	},
@@ -277,11 +277,16 @@ var triggerSchema = new Schema({
 	},
 	stateID : {
 		type : String,
-		required : false,
+		required : true,
 		unique : false
 	},
 	deviceId : {
 		type : String,
+		required : false,
+		unique : false
+	},
+	state : {
+		type : Schema.Types.Mixed,
 		required : false,
 		unique : false
 	}
@@ -391,7 +396,7 @@ rpc.register('DB_ADD_DEVICE', function(p, callback) {
 
 rpc.register('DB_GET_DEVICE', function(p, callback) {
 	console.log(p);
-	if (p && p._id||p.id) {
+	if (p && p._id || p.id) {
 		Devices.findOne(p, function(err, device) {
 			if (device && device.id) {
 				Procedures.find({
@@ -447,10 +452,11 @@ rpc.register('DB_ADD_PROCEDURE', function(p, callback) {
 	Procedure.save(function(err, result, numberAffect) {
 		callback(result);
 		//when update, call the socket server to updte the client
-		rpc.call('REALTIME_UPDATE_PROCEDURE',p,function(e){});
+		rpc.call('REALTIME_UPDATE_PROCEDURE', p, function(e) {
+		});
 	});
 });
- 
+
 rpc.register('DB_REMOVE_PROCEDURE', function(p, callback) {
 	console.log(p);
 	Procedures.remove(p, function(err) {
@@ -483,11 +489,12 @@ rpc.register('DB_ADD_STATE', function(p, callback) {
 	console.log(p);
 	//why add this two line here?
 	// States.remove({deviceId:p.deviceId, path:p.path}, function(err) {});
-        // p['timeStamp'] = new Date()
+	// p['timeStamp'] = new Date()
 	var State = new States(p);
 	State.save(function(err, result, numberAffect) {
 		callback(result);
-		rpc.call('REALTIME_UPDATE_STATE',p,function(e){});
+		rpc.call('REALTIME_UPDATE_STATE', p, function(e) {
+		});
 	});
 });
 
@@ -563,13 +570,14 @@ rpc.register('DB_ADD_HISTORY', function(p, callback) {
 	acHistory.save(function(err, result, numberAffect) {
 		console.log('save history');
 		callback(result);
-		rpc.call('REALTIME_UPDATE_HISTORY',p,function(e){});
+		rpc.call('REALTIME_UPDATE_HISTORY', p, function(e) {
+		});
 	});
 });
 
 rpc.register('DB_GET_HISTORY', function(p, callback) {
 	console.log(p);
-	AccessHistory.find(p).limit(10).sort('-_id').exec( function(err, result) {
+	AccessHistory.find(p).limit(10).sort('-_id').exec(function(err, result) {
 		callback(result);
 	});
 });
@@ -584,9 +592,45 @@ rpc.register('DB_ADD_TRIGGER', function(p, callback) {
 
 rpc.register('DB_GET_TRIGGER', function(p, callback) {
 	console.log(p);
-	Trigger.find(p).limit(10).sort('-_id').exec( function(err, result) {
+	Trigger.find(p).limit(10).sort('-_id').exec(function(err, result) {
 		callback(result);
 	});
+});
+
+rpc.register('DB_GET_TRIGGER_WITHSTATE', function(p, callback) {
+	console.log(p);
+	try {
+		Trigger.find(p, function(err, trigger) {
+			var k = 0;
+			console.log(trigger);
+			pushState();
+			function pushState() {
+				if (trigger[k] && trigger[k].stateID) {
+					States.find({
+						_id : trigger[k].stateID
+					}, function(err, state) {
+						if (k < trigger.length) {
+							trigger[k].state = {};
+							trigger[k].state = state[0];
+							k++;
+							pushState();
+						} else {
+
+						}
+					});
+				} else {
+					console.log('get trigger pass');
+					callback(trigger);
+				}
+			};
+		});
+	} catch(err) {
+		console.log("Error reading url file...");
+		throw err;
+	} finally {
+
+	}
+
 });
 
 rpc.register('DB_UPDATE_TRIGGER', function(p, callback) {
@@ -608,8 +652,6 @@ rpc.register('DB_REMOVE_TRIGGER', function(p, callback) {
 		}
 	});
 });
-
-
 
 log("started...");
 
