@@ -522,6 +522,8 @@ rpc.register('DB_UPDATE_STATE', function(p, callback) {
 		console.log('condition meet');
 		States.update(p.condition, p.update, function(err, numberAffected, raw) {
 			callback(raw);
+			rpc.call('REALTIME_UPDATE_STATE', p, function(e) {
+			});
 		});
 	}
 });
