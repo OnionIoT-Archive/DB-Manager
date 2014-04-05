@@ -1,10 +1,9 @@
-var rpc = require('./lib/amqp-rpc/amqp_rpc');
+var rpc = require('./amqp-rpc/amqp_rpc');
 var mongoose = require('mongoose');
 var uniqueValidator = require('mongoose-unique-validator');
-var config = require('./config');
-var config = config.init();
+var config = require('/etc/onionConfig.json').DB_MANAGER;
 
-var dbUrl = config.dbUrl;
+var dbUrl = config.MONGO_SERVER;
 
 var log = function(msg) {
 	process.stdout.write("module::db_manager.js: ");
