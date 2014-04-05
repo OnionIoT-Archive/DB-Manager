@@ -478,7 +478,6 @@ rpc.register('DB_GET_PROCEDURE', function(p, callback) {
 rpc.register('DB_UPDATE_PROCEDURE', function(p, callback) {
 	console.log(p);
 	if (p && p.condition && p.update) {
-		console.log('condition meet');
 		Procedures.update(p.condition, p.update, function(err, numberAffected, raw) {
 			callback(raw);
 		});
@@ -520,11 +519,12 @@ rpc.register('DB_GET_STATE', function(p, callback) {
 rpc.register('DB_UPDATE_STATE', function(p, callback) {
 	console.log(p);
 	if (p && p.condition && p.update) {
-		console.log('condition meet');
 		States.update(p.condition, p.update, function(err, numberAffected, raw) {
-			callback(raw);
+			console.log('real time state');
+			console.log(raw);
 			rpc.call('REALTIME_UPDATE_STATE', p, function(e) {
 			});
+			callback(raw);
 		});
 	}
 });
