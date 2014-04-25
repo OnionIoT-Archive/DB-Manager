@@ -322,7 +322,7 @@ db.once('open', function callback() {
 		if (err) {
 			log(err);
 		} else {
-			log('Pass Test');
+			log('Pass database Test');
 		}
 	});
 	log('db connection openned');
@@ -486,8 +486,8 @@ rpc.register('DB_UPDATE_PROCEDURE', function(p, callback) {
 rpc.register('DB_ADD_STATE', function(p, callback) {
 	console.log(p);
 	//why add this two line here?
-	// States.remove({deviceId:p.deviceId, path:p.path}, function(err) {});
-	// p['timeStamp'] = new Date()
+	 States.remove({deviceId:p.deviceId, path:p.path}, function(err) {});
+	 p['timeStamp'] = new Date()
 	var State = new States(p);
 	State.save(function(err, result, numberAffect) {
 		callback(result);
